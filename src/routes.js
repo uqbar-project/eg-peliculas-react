@@ -6,7 +6,8 @@ export const PeliculasRoutes = () => (
   <Router>
       <Switch>
           <Route exact path="/" component={BuscarPeliculas} />
-          <Route path="/pelicula/:id" component={EditarPelicula} />
+          <Route path="/crearPelicula" component={EditarPelicula} />
+          <Route path="/editarPelicula/:id" component={EditarPelicula} />
       </Switch>
   </Router>
 )

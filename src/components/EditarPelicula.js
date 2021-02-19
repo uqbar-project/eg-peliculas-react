@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, createRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { AutoComplete } from 'primereact/autocomplete'
 import { Button } from 'primereact/button'
@@ -9,6 +9,7 @@ import { InputTextarea } from 'primereact/inputtextarea'
 import { InputNumber } from 'primereact/inputnumber'
 import { actorService } from '../services/actorService'
 import { Pelicula } from '../domain/pelicula'
+import { Toast } from 'primereact/toast'
 
 export function EditarPelicula(props) {
   const peliculaId = props.match.params.id
@@ -16,7 +17,9 @@ export function EditarPelicula(props) {
   const [actores, setActores] = useState([])
   const [nuevoPersonaje, setNuevoPersonaje] = useState({})
   const history = useHistory()
-  
+  const toast = createRef()
+  const modoEdicion = !!peliculaId
+
   function editarPelicula(atributo, valor) {
     const peliculaEditada = Pelicula.fromJSON(pelicula)
     peliculaEditada[atributo] = valor
@@ -44,19 +47,43 @@ export function EditarPelicula(props) {
     return (<Button tooltip="Eliminar el personaje de la película" icon="pi pi-times" className="p-button-raised p-button-danger p-button-rounded" onClick={() => eliminarPersonaje(pelicula, personaje)} />)
   }
 
-  async function guardarCambios() {
-    peliculaService.actualizarPelicula(pelicula)
+  function cancelar() {
     history.push('/')
   }
 
+  async function guardarCambios() {
+    try {
+      modoEdicion ? 
+        await peliculaService.actualizarPelicula(pelicula) :
+        await peliculaService.crearPelicula(pelicula)
+      history.push('/')
+    } catch (e) {
+      console.log(e)
+      toast.current.show({severity: 'error', summary: 'Error al actualizar los datos de la película', detail: e.message})
+    }
+  }
+
   async function buscarActor(event) {
-    setActores(await actorService.getActores(event.query))
+    try {
+      const actores = await actorService.getActores(event.query)
+      setActores(actores)
+    } catch (e) {
+      console.log(e)
+      toast.current.show({severity: 'error', summary: 'Error al buscar los actores', detail: e.message})
+    }
   }
 
   useEffect(() => {
     const getPelicula = async function() {
-      const pelicula = await peliculaService.getPelicula(peliculaId)
-      setPelicula(pelicula)
+      try {
+        if (modoEdicion) {
+          const pelicula = await peliculaService.getPelicula(peliculaId)
+          setPelicula(pelicula)
+        }
+      } catch (e) {
+        console.log(e)
+        toast.current.show({severity: 'error', summary: 'Error al buscar la película', detail: e.message})
+      }
     }
     getPelicula()
   }, [])
@@ -65,6 +92,7 @@ export function EditarPelicula(props) {
 
   return (
     <div>
+      <Toast ref={toast}/>
       <div className="titulo">Editar Película</div>
 
       <div className="section">
@@ -76,7 +104,7 @@ export function EditarPelicula(props) {
       </div>
 
       <div className="section">
-        <InputNumber value={pelicula.anio} useGrouping={false} onChange={(e) => editarPelicula('anio', e.target.value)} placeholder="Año de estreno" style={{width: '10em'}} />
+        <InputNumber value={pelicula.anio} useGrouping={false} onChange={(e) => editarPelicula('anio', e.value)} placeholder="Año de estreno" style={{width: '10em'}} />
       </div>
 
       <DataTable value={pelicula.personajes}>
@@ -87,12 +115,14 @@ export function EditarPelicula(props) {
 
       <div className="section-group">
         <AutoComplete value={nuevoPersonaje.actor} inputStyle={{width: '30em'}} placeholder="Seleccione un actor" suggestions={actores} completeMethod={buscarActor} field="nombreCompleto" onChange={(e) => editarPersonaje('actor', e.target.value)} />
-        <InputText value={nuevoPersonaje.roles} onChange={(e) => editarPersonaje('roles', e.target.value)} placeholder="Roles" style={{width: '30em'}} />
+        <InputText value={nuevoPersonaje.roles} onChange={(e) => editarPersonaje('roles', [e.target.value])} placeholder="Roles" style={{width: '30em'}} />
         <Button icon="pi pi-plus" label="Agregar un personaje" className="p-button-primary p-button-outlined p-button-rounded" onClick={crearPersonaje}></Button>
       </div>
 
-      <Button icon="pi pi-save" label="Guardar los cambios" className="p-button-primary p-button-outlined p-button-rounded" onClick={guardarCambios}></Button>    
-
+      <div className="section-group">
+        <Button icon="pi pi-save" label="Guardar los cambios" className="p-button-primary p-button-outlined p-button-rounded" onClick={guardarCambios}></Button>    
+        <Button label="Cancelar" className="p-button-secondary p-button-outlined p-button-rounded" onClick={cancelar}></Button>
+      </div>
     </div>
   )
 }

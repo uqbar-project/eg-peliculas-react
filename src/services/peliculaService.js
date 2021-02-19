@@ -5,8 +5,10 @@ import { SERVER_CONNECTION } from './constants'
 class PeliculaService {
 
     async getPeliculas(filtroBusqueda) {
-      const peliculasJson = await axios.get(SERVER_CONNECTION + '/peliculas/' + filtroBusqueda)
-      return peliculasJson.data.map((pelicula) => Pelicula.fromJSON(pelicula))
+      if (filtroBusqueda && filtroBusqueda.trim()) {
+        const peliculasJson = await axios.get(SERVER_CONNECTION + '/peliculas/' + filtroBusqueda)
+        return peliculasJson.data.map((pelicula) => Pelicula.fromJSON(pelicula))
+      }
     }
 
     async getPelicula(id) {
@@ -15,7 +17,6 @@ class PeliculaService {
     }
 
     async actualizarPelicula(pelicula) {
-      console.log('pelicula', pelicula)
       await axios.put(SERVER_CONNECTION + '/pelicula/' + pelicula.id, pelicula)
     }
 
@@ -23,6 +24,9 @@ class PeliculaService {
       await axios.post(SERVER_CONNECTION + '/pelicula', pelicula)
     }
 
+    async eliminarPelicula(pelicula) {
+      await axios.delete(SERVER_CONNECTION + '/pelicula/' + pelicula.id, { data: pelicula })
+    }
 }
 
 export const peliculaService = new PeliculaService()
