@@ -1,6 +1,8 @@
 
 ## Películas - frontend en React
 
+[![Build Status](https://www.travis-ci.com/uqbar-project/eg-peliculas-react.svg?branch=master)](https://www.travis-ci.com/uqbar-project/eg-peliculas-react)
+
 ![demo](./video/demo.gif)
 
 Esta aplicación sirve para mostrar la integración de un frontend contra una API que puede estar hecha en cualquier tecnología.
@@ -34,4 +36,3 @@ Poder llevar un registro de películas y conocer los personajes que interpretaro
       - nombre
       - año de nacimiento
     - los roles que cumple, una lista de strings
-    
