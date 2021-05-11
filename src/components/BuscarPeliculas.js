@@ -56,7 +56,7 @@ export function BuscarPeliculas() {
 
       <DataTable value={peliculas}>
         <Column field="titulo" style={{width: '25%'}} header="Título"></Column>
-        <Column field="frase" header="Persona"></Column>
+        <Column field="frase" header="Frase"></Column>
         <Column field="anio" style={{width: defaultButtonWidth}} header="Año"></Column>
         <Column body={editar} style={{width: defaultButtonWidth}} />
         <Column body={eliminar} style={{width: defaultButtonWidth}} />
