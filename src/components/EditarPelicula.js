@@ -1,8 +1,9 @@
 import { useState, useEffect, createRef } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { AutoComplete } from 'primereact/autocomplete'
 import { Button } from 'primereact/button'
-import { Column, DataTable } from 'primereact/datatable'
+import { DataTable } from 'primereact/datatable'
+import { Column } from 'primereact/column'
 import { peliculaService } from '../services/peliculaService'
 import { InputText } from 'primereact/inputtext'
 import { InputTextarea } from 'primereact/inputtextarea'
@@ -11,14 +12,14 @@ import { actorService } from '../services/actorService'
 import { Pelicula } from '../domain/pelicula'
 import { Toast } from 'primereact/toast'
 
-export function EditarPelicula(props) {
-  const peliculaId = props.match.params.id
+export function EditarPelicula() {
+  const navigate = useNavigate()
+  const { idPelicula } = useParams()
   const [pelicula, setPelicula] = useState({})
   const [actores, setActores] = useState([])
   const [nuevoPersonaje, setNuevoPersonaje] = useState({})
-  const history = useHistory()
   const toast = createRef()
-  const modoEdicion = !!peliculaId
+  const modoEdicion = !!idPelicula
 
   function editarPelicula(atributo, valor) {
     const peliculaEditada = Pelicula.fromJSON(pelicula)
@@ -44,11 +45,11 @@ export function EditarPelicula(props) {
   }
 
   function eliminar(personaje) {
-    return (<Button tooltip="Eliminar el personaje de la película" icon="pi pi-times" className="p-button-raised p-button-danger p-button-rounded" onClick={() => eliminarPersonaje(pelicula, personaje)} />)
+    return <Button tooltip="Eliminar el personaje de la película" icon="pi pi-times" className="p-button-raised p-button-danger p-button-rounded" onClick={() => eliminarPersonaje(pelicula, personaje)} />
   }
 
   function cancelar() {
-    history.push('/')
+    navigate('/')
   }
 
   async function guardarCambios() {
@@ -56,7 +57,7 @@ export function EditarPelicula(props) {
       modoEdicion ? 
         await peliculaService.actualizarPelicula(pelicula) :
         await peliculaService.crearPelicula(pelicula)
-      history.push('/')
+      navigate('/')
     } catch (e) {
       console.log(e)
       toast.current.show({severity: 'error', summary: 'Error al actualizar los datos de la película', detail: e.message})
@@ -77,7 +78,7 @@ export function EditarPelicula(props) {
     const getPelicula = async function() {
       try {
         if (modoEdicion) {
-          const pelicula = await peliculaService.getPelicula(peliculaId)
+          const pelicula = await peliculaService.getPelicula(idPelicula)
           setPelicula(pelicula)
         }
       } catch (e) {

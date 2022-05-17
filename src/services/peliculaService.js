@@ -8,7 +8,7 @@ class PeliculaService {
       if (filtroBusqueda && filtroBusqueda.trim()) {
         const peliculasJson = await axios.get(SERVER_CONNECTION + '/peliculas/' + filtroBusqueda)
         return peliculasJson.data.map((pelicula) => Pelicula.fromJSON(pelicula))
-      }
+      } else return []
     }
 
     async getPelicula(id) {

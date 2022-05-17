@@ -1,13 +1,12 @@
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom'
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import { BuscarPeliculas } from './components/BuscarPeliculas'
 import { EditarPelicula } from './components/EditarPelicula'
 
-export const PeliculasRoutes = () => (
+export const PeliculasRoutes = () => 
   <Router>
-      <Switch>
-          <Route exact path="/" component={BuscarPeliculas} />
-          <Route path="/crearPelicula" component={EditarPelicula} />
-          <Route path="/editarPelicula/:id" component={EditarPelicula} />
-      </Switch>
+      <Routes>
+          <Route path="/" element={<BuscarPeliculas/>} />
+          <Route path="/crearPelicula" element={<EditarPelicula/>} />
+          <Route path="/editarPelicula/:idPelicula" element={<EditarPelicula/>} />
+      </Routes>
   </Router>
-)
