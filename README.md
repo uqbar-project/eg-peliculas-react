@@ -1,7 +1,7 @@
 
 ## Películas - frontend en React
 
-[![Build Status](https://www.travis-ci.com/uqbar-project/eg-peliculas-react.svg?branch=master)](https://www.travis-ci.com/uqbar-project/eg-peliculas-react)
+[![Build React App](https://github.com/uqbar-project/eg-peliculas-react/actions/workflows/build.yml/badge.svg)](https://github.com/uqbar-project/eg-peliculas-react/actions/workflows/build.yml)
 
 ![demo](./video/demo.gif)
 

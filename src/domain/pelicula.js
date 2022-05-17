@@ -1,9 +1,12 @@
 export class Pelicula {
-  id = null
-  titulo = ''
-  frase = ''
-  anio = 0
-  personajes = []
+
+  constructor() {
+    this.id = null
+    this.titulo = ''
+    this.frase = ''
+    this.anio = 0
+    this.personajes = []
+  }
 
   agregarPersonaje(personaje) {
     this.personajes.push(personaje)
