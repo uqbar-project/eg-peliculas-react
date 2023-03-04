@@ -13,12 +13,21 @@ export class Pelicula {
   }
 
   eliminarPersonaje(personaje) {
-    const index = this.personajes.indexOf(personaje)
-    if (index > 0) {
+    const index = this.findIndexPersonaje(personaje)
+    if (index >= 0) {
       this.personajes.splice(index, 1)
     } else {
       throw new Error('El personaje no existe en la película')
     }
+  }
+
+  // Este método podría haber sido parte de una abstracción Personaje
+  // por el momento lo dejamos así
+  findIndexPersonaje(personaje) {
+    const fnCompararPersonaje = _personaje => '' + _personaje.actor.id + _personaje.roles
+    const personajes = this.personajes.map(fnCompararPersonaje)
+    const personajeAComparar = fnCompararPersonaje(personaje)
+    return personajes.indexOf(personajeAComparar)
   }
 
   static fromJSON(data) {
