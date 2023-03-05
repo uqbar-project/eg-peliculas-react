@@ -1,7 +1,7 @@
 
 ## Películas - frontend en React
 
-[![Build React App](https://github.com/uqbar-project/eg-peliculas-react/actions/workflows/build.yml/badge.svg)](https://github.com/uqbar-project/eg-peliculas-react/actions/workflows/build.yml) ![coverage](./badges/coverage/coverage-lines.svg)
+[![Build React App](https://github.com/uqbar-project/eg-peliculas-react/actions/workflows/build.yml/badge.svg)](https://github.com/uqbar-project/eg-peliculas-react/actions/workflows/build.yml) ![coverage](./badges/coverage-lines.svg)
 
 ![demo](./video/demo.gif)
 
