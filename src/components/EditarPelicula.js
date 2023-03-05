@@ -12,12 +12,28 @@ import { actorService } from '../services/actorService'
 import { Pelicula } from '../domain/pelicula'
 import { Toast } from 'primereact/toast'
 
+function anioActual() {
+  return new Date().getFullYear() 
+}
+
 export function EditarPelicula() {
   const navigate = useNavigate()
   const { idPelicula } = useParams()
-  const [pelicula, setPelicula] = useState({})
+  const [pelicula, setPelicula] = useState({
+    titulo: '',
+    frase: '',
+    anio: anioActual(),
+  })
+
   const [actores, setActores] = useState([])
-  const [nuevoPersonaje, setNuevoPersonaje] = useState({})
+  const [nuevoPersonaje, setNuevoPersonaje] = useState({
+    actor: {
+      id: null,
+      nombreCompleto: '',
+      anioNacimiento: 0,
+    },
+    roles: '',
+  })
   const toast = createRef()
   const modoEdicion = !!idPelicula
 
