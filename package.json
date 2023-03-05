@@ -43,11 +43,10 @@
     ]
   },
   "jest": {
-    "coverageReporters": [
-      "html",
-      "text-summary",
-      "json-summary"
-    ],
+    "coverageReporters": [ "html", "text-summary", "json-summary"],
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    },
     "collectCoverageFrom": [
       "**/*.{js,jsx}",
       "!**/reportWebVitals.js",
