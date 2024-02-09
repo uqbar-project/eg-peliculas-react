@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Pelicula } from '../domain/pelicula'
+import { Pelicula } from 'src/domain/pelicula'
 import { SERVER_CONNECTION } from './constants'
 
 class PeliculaService {

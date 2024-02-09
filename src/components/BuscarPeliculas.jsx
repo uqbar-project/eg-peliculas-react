@@ -1,11 +1,12 @@
-import { useState, useEffect, createRef } from 'react'
+import { useState, createRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from 'primereact/button'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
-import { peliculaService } from '../services/peliculaService'
 import { InputText } from 'primereact/inputtext'
 import { Toast } from 'primereact/toast'
+import { peliculaService } from 'src/services/peliculaService'
+import { getErrorMessage } from './errorHandling'
 
 export function BuscarPeliculas() {
   const [peliculas, setPeliculas] = useState([])
@@ -24,8 +25,7 @@ export function BuscarPeliculas() {
       const peliculasNuevas = peliculas.filter((peliculaAFiltrar) => peliculaAFiltrar.id != pelicula.id)
       setPeliculas([...peliculasNuevas])
     } catch (e) {
-      console.log(e)
-      toast.current.show({severity: 'error', summary: 'Error al eliminar la película', detail: e.message})
+      toast.current.show({severity: 'error', summary: 'Error al eliminar la película', detail: getErrorMessage(e)})
     }
 }
 
@@ -33,18 +33,15 @@ export function BuscarPeliculas() {
     return <Button tooltip="Eliminar la película" icon="pi pi-times" className="p-button-raised p-button-danger p-button-rounded" onClick={() => eliminarPelicula(pelicula)} />
   }
 
-  useEffect(() => {
-    const getPeliculas = async function() {
-      try {
-        const peliculas = await peliculaService.getPeliculas(filtroBusqueda)
-        setPeliculas(peliculas)
-      } catch (e) {
-        console.log(e)
-        toast.current.show({severity: 'error', summary: 'Error al buscar las películas', detail: e.message})
-      }
+  const getPeliculas = async (nuevoFiltroBusqueda) => {
+    try {
+      setFiltroBusqueda(nuevoFiltroBusqueda)
+      const peliculas = await peliculaService.getPeliculas(filtroBusqueda)
+      setPeliculas(peliculas)
+    } catch (e) {
+      toast.current.show({severity: 'error', summary: 'Error al buscar las películas', detail: getErrorMessage(e)})
     }
-    getPeliculas()
-  }, [filtroBusqueda])
+  }
 
   const defaultButtonWidth = '10em'
 
@@ -53,7 +50,7 @@ export function BuscarPeliculas() {
       <Toast ref={toast}/>
       <div className="titulo">Películas</div>
 
-      <InputText value={filtroBusqueda} onChange={(e) => setFiltroBusqueda(e.target.value)} placeholder="Ingrese un valor a buscar para el título de una película, por ejemplo 'Good'" style={{width: '40em'}} />
+      <InputText value={filtroBusqueda} onChange={(e) => getPeliculas(e.target.value)} placeholder="Ingrese un valor a buscar para el título de una película, por ejemplo 'Good'" style={{width: '40em'}} />
 
       <DataTable value={peliculas}>
         <Column field="titulo" style={{width: '25%'}} header="Título"></Column>

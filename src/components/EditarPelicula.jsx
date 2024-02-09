@@ -11,19 +11,12 @@ import { InputNumber } from 'primereact/inputnumber'
 import { actorService } from '../services/actorService'
 import { Pelicula } from '../domain/pelicula'
 import { Toast } from 'primereact/toast'
-
-function anioActual() {
-  return new Date().getFullYear() 
-}
+import { getErrorMessage } from './errorHandling'
 
 export function EditarPelicula() {
   const navigate = useNavigate()
   const { idPelicula } = useParams()
-  const [pelicula, setPelicula] = useState({
-    titulo: '',
-    frase: '',
-    anio: anioActual(),
-  })
+  const [pelicula, setPelicula] = useState(new Pelicula())
 
   const [actores, setActores] = useState([])
   const [nuevoPersonaje, setNuevoPersonaje] = useState({
@@ -50,9 +43,13 @@ export function EditarPelicula() {
   }
 
   function crearPersonaje() {
-    pelicula.agregarPersonaje({ ...nuevoPersonaje })
-    setPelicula(Pelicula.fromJSON(pelicula))
-    setNuevoPersonaje({roles: ''})
+    try {
+      pelicula.agregarPersonaje({ ...nuevoPersonaje })
+      setPelicula(Pelicula.fromJSON(pelicula))
+      setNuevoPersonaje({roles: ''})
+    } catch (e) {
+      toast.current.show({severity: 'error', summary: 'Error al crear el personaje', detail: getErrorMessage(e)})
+    }
   }
 
   function eliminarPersonaje(pelicula, personaje) {
@@ -70,13 +67,13 @@ export function EditarPelicula() {
 
   async function guardarCambios() {
     try {
+      pelicula.validar()
       modoEdicion ? 
         await peliculaService.actualizarPelicula(pelicula) :
         await peliculaService.crearPelicula(pelicula)
       navigate('/')
     } catch (e) {
-      console.log(e)
-      toast.current.show({severity: 'error', summary: 'Error al actualizar los datos de la película', detail: e.message})
+      toast.current.show({severity: 'error', summary: 'Error al actualizar los datos de la película', detail: getErrorMessage(e)})
     }
   }
 
@@ -85,8 +82,7 @@ export function EditarPelicula() {
       const actores = await actorService.getActores(event.query)
       setActores(actores)
     } catch (e) {
-      console.log(e)
-      toast.current.show({severity: 'error', summary: 'Error al buscar los actores', detail: e.message})
+      toast.current.show({severity: 'error', summary: 'Error al buscar los actores', detail: getErrorMessage(e)})
     }
   }
 
@@ -98,11 +94,11 @@ export function EditarPelicula() {
           setPelicula(pelicula)
         }
       } catch (e) {
-        console.log(e)
-        toast.current.show({severity: 'error', summary: 'Error al buscar la película', detail: e.message})
+        toast.current.show({severity: 'error', summary: 'Error al buscar la película', detail: getErrorMessage(e)})
       }
     }
     getPelicula()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const defaultButtonWidth = '9em'
