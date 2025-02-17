@@ -3,7 +3,7 @@ import { SERVER_CONNECTION } from './constants'
 
 class ActorService {
 
-    async getActores(filtroBusqueda) {
+    async getActores(filtroBusqueda: string) {
       const peliculasJson = await axios.get(SERVER_CONNECTION + '/actores/' + filtroBusqueda)
       return peliculasJson.data
     }

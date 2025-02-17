@@ -5,41 +5,42 @@ import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
 import { InputText } from 'primereact/inputtext'
 import { Toast } from 'primereact/toast'
-import { peliculaService } from 'src/services/peliculaService'
+import { Pelicula } from '../domain/pelicula'
+import { peliculaService } from '../services/peliculaService'
 import { getErrorMessage } from './errorHandling'
 
 export function BuscarPeliculas() {
   const [peliculas, setPeliculas] = useState([])
   const [filtroBusqueda, setFiltroBusqueda] = useState('')
   const navigate = useNavigate()
-  const toast = createRef()
+  const toast = createRef<Toast>()
   
-  function editar(pelicula) {
+  function editar(pelicula: Pelicula) {
     return <Button tooltip="Editar la película" icon="pi pi-chevron-right" className="p-button-raised p-button-info p-button-rounded" onClick={() => navigate(`editarPelicula/${pelicula.id}`)} />
   }
 
-  async function eliminarPelicula(pelicula) {
+  async function eliminarPelicula(pelicula: Pelicula) {
     try {
       await peliculaService.eliminarPelicula(pelicula)
-      toast.current.show({ severity: 'success', summary: 'La película fue eliminada correctamente' })
+      toast.current!.show({ severity: 'success', summary: 'La película fue eliminada correctamente' })
       const peliculasNuevas = peliculas.filter((peliculaAFiltrar) => peliculaAFiltrar.id != pelicula.id)
       setPeliculas([...peliculasNuevas])
     } catch (e) {
-      toast.current.show({severity: 'error', summary: 'Error al eliminar la película', detail: getErrorMessage(e)})
+      toast.current!.show({severity: 'error', summary: 'Error al eliminar la película', detail: getErrorMessage(e)})
     }
 }
 
-  function eliminar(pelicula) {
+  function eliminar(pelicula: Pelicula) {
     return <Button tooltip="Eliminar la película" icon="pi pi-times" className="p-button-raised p-button-danger p-button-rounded" onClick={() => eliminarPelicula(pelicula)} />
   }
 
-  const getPeliculas = async (nuevoFiltroBusqueda) => {
+  const getPeliculas = async (nuevoFiltroBusqueda: string) => {
     try {
       setFiltroBusqueda(nuevoFiltroBusqueda)
       const peliculas = await peliculaService.getPeliculas(filtroBusqueda)
       setPeliculas(peliculas)
     } catch (e) {
-      toast.current.show({severity: 'error', summary: 'Error al buscar las películas', detail: getErrorMessage(e)})
+      toast.current!.show({severity: 'error', summary: 'Error al buscar las películas', detail: getErrorMessage(e)})
     }
   }
 
