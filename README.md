@@ -1,9 +1,9 @@
 
 ## Películas - frontend en React
 
-[![Build React App](https://github.com/uqbar-project/eg-peliculas-react/actions/workflows/build.yml/badge.svg)](https://github.com/uqbar-project/eg-peliculas-react/actions/workflows/build.yml) ![coverage](./badges/coverage-jest%20coverage.svg)
+[![Build React App](https://github.com/uqbar-project/eg-peliculas-react/actions/workflows/build.yml/badge.svg)](https://github.com/uqbar-project/eg-peliculas-react/actions/workflows/build.yml) [![codecov](https://codecov.io/gh/uqbar-project/eg-peliculas-react/graph/badge.svg?token=XAK5S9U17Z)](https://codecov.io/gh/uqbar-project/eg-peliculas-react)
 
-![demo](./video/demo.gif)
+![demo](./video/demo2025.gif)
 
 Esta aplicación sirve para mostrar la integración de un frontend contra una API que puede estar hecha en cualquier tecnología.
 
