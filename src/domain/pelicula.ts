@@ -2,7 +2,7 @@ import { Personaje } from "./personaje"
 
 export class Pelicula {
 
-  constructor(public id = null, public titulo = '', public frase = '', public anio = new Date().getFullYear(), public personajes: Personaje[] = []) {
+  constructor(public id = null, public titulo = '', public frase = '', public anio: number | null = new Date().getFullYear(), public personajes: Personaje[] = []) {
   }
 
   agregarPersonaje(personaje: Personaje) {
@@ -25,7 +25,7 @@ export class Pelicula {
   // Este método podría haber sido parte de una abstracción Personaje
   // por el momento lo dejamos así
   findIndexPersonaje(personaje: Personaje) {
-    const fnCompararPersonaje = (_personaje: Personaje) => '' + _personaje.actor.id + _personaje.roles
+    const fnCompararPersonaje = (_personaje: Personaje) => '' + (_personaje.actor?.id ?? 0) + _personaje.roles
     const personajes = this.personajes.map(fnCompararPersonaje)
     const personajeAComparar = fnCompararPersonaje(personaje)
     return personajes.indexOf(personajeAComparar)
@@ -38,7 +38,7 @@ export class Pelicula {
     validarCampo(this.anio, (anio) => !!anio && anio > 1930, "Debe ingresar un año mayor a 1930.", errores)
     validarCampo<Personaje[]>(this.personajes, (personajes) => personajes.length > 0, "Debe ingresar personajes.", errores)
     validarCampo<Personaje[]>(this.personajes, (personajes) => personajes.every(personaje => !!personaje.roles), "Debe ingresar roles para todos los personajes.", errores)
-    validarCampo<Personaje[]>(this.personajes, (personajes) => personajes.every(personaje => !!personaje.actor.id), "Debe ingresar actores para todos los personajes.", errores)
+    validarCampo<Personaje[]>(this.personajes, (personajes) => personajes.every(personaje => !!personaje.actor?.id), "Debe ingresar actores para todos los personajes.", errores)
     if (errores.length) throw errores
   }
 

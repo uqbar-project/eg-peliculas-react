@@ -10,8 +10,8 @@ import { peliculaService } from '../services/peliculaService'
 import { getErrorMessage } from './errorHandling'
 
 export function BuscarPeliculas() {
-  const [peliculas, setPeliculas] = useState([])
-  const [filtroBusqueda, setFiltroBusqueda] = useState('')
+  const [peliculas, setPeliculas] = useState<Pelicula[]>([])
+  const [filtroBusqueda, setFiltroBusqueda] = useState<string>('')
   const navigate = useNavigate()
   const toast = createRef<Toast>()
   

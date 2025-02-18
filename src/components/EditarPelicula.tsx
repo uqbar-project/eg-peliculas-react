@@ -1,6 +1,6 @@
 import { useState, useEffect, createRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { AutoComplete } from 'primereact/autocomplete'
+import { AutoComplete, AutoCompleteCompleteEvent } from 'primereact/autocomplete'
 import { Button } from 'primereact/button'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
@@ -12,31 +12,32 @@ import { actorService } from '../services/actorService'
 import { Pelicula } from '../domain/pelicula'
 import { Toast } from 'primereact/toast'
 import { getErrorMessage } from './errorHandling'
+import { Actor, Personaje } from '../domain/personaje'
 
 export function EditarPelicula() {
   const navigate = useNavigate()
   const { idPelicula } = useParams()
-  const [pelicula, setPelicula] = useState(new Pelicula())
+  const [pelicula, setPelicula] = useState<Pelicula>(new Pelicula())
 
-  const [actores, setActores] = useState([])
-  const [nuevoPersonaje, setNuevoPersonaje] = useState({
+  const [actores, setActores] = useState<Actor[]>([])
+  const [nuevoPersonaje, setNuevoPersonaje] = useState<Personaje>({
     actor: {
       id: null,
       nombreCompleto: '',
       anioNacimiento: 0,
     },
-    roles: '',
+    roles: [],
   })
-  const toast = createRef()
+  const toast = createRef<Toast>()
   const modoEdicion = !!idPelicula
 
-  function editarPelicula(atributo, valor) {
+  function editarPelicula<K extends keyof Pelicula>(atributo: K, valor: Pelicula[K]) {
     const peliculaEditada = Pelicula.fromJSON(pelicula)
     peliculaEditada[atributo] = valor
     setPelicula(peliculaEditada)
   }
 
-  function editarPersonaje(atributo, valor) {
+  function editarPersonaje<K extends keyof Personaje>(atributo: K, valor: Personaje[K]) {
     const personajeEditado = { ...nuevoPersonaje }
     personajeEditado[atributo] = valor
     setNuevoPersonaje(personajeEditado)
@@ -46,18 +47,18 @@ export function EditarPelicula() {
     try {
       pelicula.agregarPersonaje({ ...nuevoPersonaje })
       setPelicula(Pelicula.fromJSON(pelicula))
-      setNuevoPersonaje({roles: ''})
+      setNuevoPersonaje({roles: []})
     } catch (e) {
-      toast.current.show({severity: 'error', summary: 'Error al crear el personaje', detail: getErrorMessage(e)})
+      toast.current!.show({severity: 'error', summary: 'Error al crear el personaje', detail: getErrorMessage(e)})
     }
   }
 
-  function eliminarPersonaje(pelicula, personaje) {
+  function eliminarPersonaje(pelicula: Pelicula, personaje: Personaje) {
     pelicula.eliminarPersonaje(personaje)
     setPelicula(Pelicula.fromJSON(pelicula))
   }
 
-  function eliminar(personaje) {
+  function eliminar(personaje: Personaje) {
     return <Button tooltip="Eliminar el personaje de la película" icon="pi pi-times" className="p-button-raised p-button-danger p-button-rounded" onClick={() => eliminarPersonaje(pelicula, personaje)} />
   }
 
@@ -68,21 +69,22 @@ export function EditarPelicula() {
   async function guardarCambios() {
     try {
       pelicula.validar()
-      modoEdicion ? 
-        await peliculaService.actualizarPelicula(pelicula) :
+      if (modoEdicion)
+        await peliculaService.actualizarPelicula(pelicula)
+      else
         await peliculaService.crearPelicula(pelicula)
       navigate('/')
     } catch (e) {
-      toast.current.show({severity: 'error', summary: 'Error al actualizar los datos de la película', detail: getErrorMessage(e)})
+      toast.current!.show({severity: 'error', summary: 'Error al actualizar los datos de la película', detail: getErrorMessage(e)})
     }
   }
 
-  async function buscarActor(event) {
+  async function buscarActor(event: AutoCompleteCompleteEvent) {
     try {
       const actores = await actorService.getActores(event.query)
       setActores(actores)
     } catch (e) {
-      toast.current.show({severity: 'error', summary: 'Error al buscar los actores', detail: getErrorMessage(e)})
+      toast.current!.show({severity: 'error', summary: 'Error al buscar los actores', detail: getErrorMessage(e)})
     }
   }
 
@@ -94,7 +96,7 @@ export function EditarPelicula() {
           setPelicula(pelicula)
         }
       } catch (e) {
-        toast.current.show({severity: 'error', summary: 'Error al buscar la película', detail: getErrorMessage(e)})
+        toast.current!.show({severity: 'error', summary: 'Error al buscar la película', detail: getErrorMessage(e)})
       }
     }
     getPelicula()
@@ -128,7 +130,7 @@ export function EditarPelicula() {
 
       <div className="section-group">
         <AutoComplete value={nuevoPersonaje.actor} inputStyle={{width: '30em'}} placeholder="Seleccione un actor" suggestions={actores} completeMethod={buscarActor} field="nombreCompleto" onChange={(e) => editarPersonaje('actor', e.target.value)} />
-        <InputText value={nuevoPersonaje.roles} onChange={(e) => editarPersonaje('roles', [e.target.value])} placeholder="Roles" style={{width: '30em'}} />
+        <InputText value={nuevoPersonaje.roles.join(', ')} onChange={(e) => editarPersonaje('roles', [e.target.value])} placeholder="Roles" style={{width: '30em'}} />
         <Button icon="pi pi-plus" label="Agregar un personaje" className="p-button-primary p-button-outlined p-button-rounded" onClick={crearPersonaje}></Button>
       </div>
 

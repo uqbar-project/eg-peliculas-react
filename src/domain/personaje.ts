@@ -1,9 +1,10 @@
 export type Personaje = {
   roles: string[],
-  actor: Actor,
+  actor?: Actor,
 }
 
 export type Actor = {
-  id: number,
-  nombre: string,
+  id: number | null,
+  nombreCompleto: string,
+  anioNacimiento: number,
 }

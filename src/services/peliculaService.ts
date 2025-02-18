@@ -11,7 +11,7 @@ class PeliculaService {
       } else return []
     }
 
-    async getPelicula(id: number) {
+    async getPelicula(id: string) {
       const peliculaJson = await axios.get(SERVER_CONNECTION + '/pelicula/' + id)
       return Pelicula.fromJSON(peliculaJson.data)
     }
