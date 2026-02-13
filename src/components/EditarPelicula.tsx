@@ -129,7 +129,7 @@ export function EditarPelicula() {
       </DataTable>
 
       <div className="section-group">
-        <AutoComplete value={nuevoPersonaje.actor} inputStyle={{width: '30em'}} placeholder="Seleccione un actor" suggestions={actores} completeMethod={buscarActor} field="nombreCompleto" onChange={(e) => editarPersonaje('actor', e.target.value)} />
+        <AutoComplete value={nuevoPersonaje.actor} inputStyle={{width: '30em'}} placeholder="Seleccione un actor" suggestions={actores} completeMethod={buscarActor} field="nombreCompleto" onChange={(e) => editarPersonaje('actor', e.target.value!)} />
         <InputText value={nuevoPersonaje.roles.join(', ')} onChange={(e) => editarPersonaje('roles', [e.target.value])} placeholder="Roles" style={{width: '30em'}} />
         <Button icon="pi pi-plus" label="Agregar un personaje" className="p-button-primary p-button-outlined p-button-rounded" onClick={crearPersonaje}></Button>
       </div>
