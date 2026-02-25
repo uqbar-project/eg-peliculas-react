@@ -52,6 +52,7 @@ export function BuscarPeliculas() {
       <div className="titulo">Películas</div>
 
       <InputText value={filtroBusqueda} onChange={(e) => getPeliculas(e.target.value)} placeholder="Ingrese un valor a buscar para el título de una película, por ejemplo 'Good'" style={{width: '40em'}} />
+      <div className="separador"></div>
 
       <DataTable value={peliculas}>
         <Column field="titulo" style={{width: '25%'}} header="Título"></Column>
@@ -60,6 +61,8 @@ export function BuscarPeliculas() {
         <Column body={editar} style={{width: defaultButtonWidth}} ></Column>
         <Column body={eliminar} style={{width: defaultButtonWidth}}></Column>
       </DataTable>
+      <div className="separador"></div>
+
       <Button icon="pi pi-plus" label="Agregar una nueva película" className="p-button-primary p-button-outlined p-button-rounded" onClick={() => { navigate('/crearPelicula')}}></Button>
     </div>
   )
